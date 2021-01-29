@@ -16,23 +16,24 @@ kn = KNeighborsClassifier()
 mlp = MLPClassifier(max_iter=15000)
 gub = GaussianNB()
 
+
 def random_forrest_raw():
     global rf
     rf.fit(X_train, y_train)
     s = rf.score(X_test,y_test)
-    print("Random forrest score: {:.2f}%".format(s * 100), "\nwith params: ", rf.get_params())
+    print("Random forrest score: {:.2f}%".format(s * 100))#, "\nwith params: ")#, rf.get_params())
 
 def ada_raw():
     ada.fit(X_train,y_train)
-    print("ADA boost score: {:.2f}%".format(ada.score(X_test, y_test) * 100), "\nwith params: ", ada.get_params())
+    print("ADA boost score: {:.2f}%".format(ada.score(X_test, y_test) * 100))#, "\nwith params: ", ada.get_params())
 
 def grad_raw():
     gb.fit(X_train,y_train)
-    print("Gradient boost score: {:.2f}%".format(gb.score(X_test, y_test) * 100), "\nwith params: ", gb.get_params())
+    print("Gradient boost score: {:.2f}%".format(gb.score(X_test, y_test) * 100))#, "\nwith params: ", gb.get_params())
 
 def kn_rwa():
     kn.fit(X_train,y_train)
-    print("KNN score: {:.2f}%".format(gb.score(X_test, y_test) * 100), "\nwith params: ", kn.get_params())
+    print("KNN score: {:.2f}%".format(gb.score(X_test, y_test) * 100))#, "\nwith params: ", kn.get_params())
 
 def mlp_raw(test=X_test):
     mlp.fit(X_train,y_train)
@@ -44,7 +45,7 @@ def mlp_raw(test=X_test):
 def gaus_raw():
     gub.fit(X_train,y_train)
     s = gub.score(X_test, y_test)
-    print("Gup score: {:.2f}%".format(s * 100), "\nwith params: ", gub.get_params())
+    print("Gup score: {:.2f}%".format(s * 100))#, "\nwith params: ", gub.get_params())
 # Classifying
 #random_forrest_raw()
 
@@ -80,17 +81,18 @@ def make_sub_mission():
     X = dp.mean_age(f)
     X = dp.sc.fit_transform(X)
     #mlp.fit(X_train,y_train)
-    pred_sub = gub.predict(X)
+    pred_sub = mlp.predict(X)
     pre_df = pd.DataFrame(pred_sub, columns=["Survived"])
     print("pred", pre_df.describe())
     pre_df['PassengerId'] = dp.tdf.PassengerId
     print(pre_df.describe())
     pre_df.to_csv('submit.csv',index=False)
 
+
 #random_forrest_raw()
 #ada_raw()
 #grad_raw()
 #kn_rwa()
-#mlp_raw()
+mlp_raw()
 gaus_raw()
 make_sub_mission()
