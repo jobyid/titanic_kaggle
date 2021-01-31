@@ -7,6 +7,7 @@ from sklearn.decomposition import PCA
 import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler, MaxAbsScaler
+import name as n
 
 df = pd.read_csv('train.csv')
 tdf = pd.read_csv('test.csv')
@@ -25,15 +26,15 @@ def drop_columns(df=df, test=False):
        # 'Parch',
        fx_df = df[[ 'Pclass', 'Sex', 'Age', 'SibSp',
                'Fare','Name']]
-       fx_df.loc[(fx_df.Name.str.contains('Lady') ), 'Age'] = 8
-       fx_df.loc[(fx_df.Name.str.contains('Lord')), 'Age'] = 8
-       fx_df.loc[(fx_df.Name.str.contains('The Countess')), 'Age'] = 8
+
+       fx_df["Name"] = n.replace_Name(test)
        # age has some missing values
        # Sex is categorical
        fx_df.Sex = fx_df.Sex.replace('male', 0).replace('female',5)
        if test:
               fx_df.Fare.fillna(value=df.Age.mean(), inplace=True)
        return fx_df
+
 
 def group_age(df):
        df.loc[(df.Age < 18),'Age'] = 0
@@ -59,6 +60,7 @@ def frame_after_pca():
        pdf.Sex = pdf.Sex.replace('male', 0).replace('female', 1)
        X = pdf.iloc[:, :].values
        return X
+
 
 X = mean_age()
 y = np.array(df['Survived'])

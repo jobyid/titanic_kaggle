@@ -5,9 +5,10 @@ from sklearn.ensemble import AdaBoostClassifier, GradientBoostingClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.naive_bayes import GaussianNB
+from sklearn.svm import SVC
 import pandas as pd
 import numpy as np
-
+X_all, y_all = dp.X, dp.y
 X_train, X_test, y_train, y_test = dp.X_train, dp.X_test, dp.y_train, dp.y_test
 rf = RandomForestClassifier()
 ada = AdaBoostClassifier()
@@ -15,7 +16,7 @@ gb = GradientBoostingClassifier()
 kn = KNeighborsClassifier()
 mlp = MLPClassifier(max_iter=15000)
 gub = GaussianNB()
-
+svc = SVC()
 
 def random_forrest_raw():
     global rf
@@ -38,7 +39,7 @@ def kn_rwa():
 def mlp_raw(test=X_test):
     mlp.fit(X_train,y_train)
     s = mlp.score(X_test,y_test)
-    print("MlP score: {:.2f}%".format(s * 100), "\nwith params: ", mlp.get_params())
+    print("MlP score: {:.2f}%".format(s * 100))#, "\nwith params: ", mlp.get_params())
     pred = mlp.predict(test)
     return pred
 
@@ -46,6 +47,11 @@ def gaus_raw():
     gub.fit(X_train,y_train)
     s = gub.score(X_test, y_test)
     print("Gup score: {:.2f}%".format(s * 100))#, "\nwith params: ", gub.get_params())
+
+def svc_class():
+    svc.fit(X_train,y_train)
+    s = svc.score(X_test, y_test)
+    print("SVC score: {:.2f}%".format(s * 100))
 # Classifying
 #random_forrest_raw()
 
@@ -80,19 +86,21 @@ def make_sub_mission():
     f = dp.drop_columns(dp.tdf,test=True)
     X = dp.mean_age(f)
     X = dp.sc.fit_transform(X)
-    #mlp.fit(X_train,y_train)
+    svc.fit(X_all,y_all)
     pred_sub = mlp.predict(X)
     pre_df = pd.DataFrame(pred_sub, columns=["Survived"])
-    print("pred", pre_df.describe())
+    #print("pred", pre_df.describe())
     pre_df['PassengerId'] = dp.tdf.PassengerId
-    print(pre_df.describe())
+    #print(pre_df.describe())
     pre_df.to_csv('submit.csv',index=False)
+    print("Done Submit")
 
 
-#random_forrest_raw()
-#ada_raw()
-#grad_raw()
-#kn_rwa()
+random_forrest_raw()
+ada_raw()
+grad_raw()
+kn_rwa()
 mlp_raw()
 gaus_raw()
+svc_class()
 make_sub_mission()
